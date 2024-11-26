@@ -1,1 +1,1 @@
-This is a repository that contains all the projects that I have done during my accademic career.
+This collection showcases all the projects I have completed during my academic career.
