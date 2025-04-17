@@ -33,8 +33,8 @@ ArmwheelsIds createArmwheels(Armwheels armwheels, b2Vec2 pivotPosition, b2WorldI
 
 	ArmwheelsIds Ids; // Structure to store the Box2D IDs
 
-	float initialAngle1_rad = -B2_PI / 4.0f; // -45° for the first arm (right)
-	float initialAngle2_rad = -3.0f * B2_PI / 4.0f; // -135° for the second arm (left)
+	float initialAngle1_rad = -B2_PI / 4.0f; // -45Â° for the first arm (right)
+	float initialAngle2_rad = -3.0f * B2_PI / 4.0f; // -135Â° for the second arm (left)
 
 	// Create Arm Bodies
 	b2BodyDef bodyDef = b2DefaultBodyDef();
@@ -313,7 +313,7 @@ int main() {
 	b2WorldId worldId = b2CreateWorld(&worldDef);
 	// Generate the structure representing the armwheels, change the values below to get different behaviours
 	Armwheels armwheels;
-	armwheels.armAngle = b2_pi / 2;	// Initialize the angle as 90°
+	armwheels.armAngle = b2_pi / 2;	// Initialize the angle as 90Â°
 	armwheels.wheelsDensity = 1.0f;
 	armwheels.wheelsFriction = 2.0f;
 	armwheels.wheelsRadius = 1.0f;
