@@ -1,9 +1,0 @@
-﻿  Armwheels.cpp
-F:\Users\Utente\SFML-3.0.0\include\SFML\System\Exception.hpp(41,47): warning C4275: class di interfaccia non dll 'std::runtime_error' utilizzato come base per class di interfaccia dll 'sf::Exception'
-  (compilazione del file di origine 'Armwheels.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\stdexcept(100,19):
-      vedere la dichiarazione di 'std::runtime_error'
-      F:\Users\Utente\SFML-3.0.0\include\SFML\System\Exception.hpp(41,23):
-      vedere la dichiarazione di 'sf::Exception'
-  
-  Armwheels.vcxproj -> F:\Users\Utente\repos\Armwheels\x64\Debug\Armwheels.exe
