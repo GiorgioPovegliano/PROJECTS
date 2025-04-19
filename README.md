@@ -27,3 +27,9 @@ This collection showcases some of the projects I have completed during my academ
 - Each dataset includes the corrupted image, normal patches, and patches that have been subjected to transformations (rotation, scaling, inversion, and noise addition) to increase the complexity of the problem.
 - Development and comparison of different approaches for solving the problem (SIFT, ORB, Template Matching).
 - **TOOLS:** Microsoft Visual Studio as the development environment, C++ as the programming language, OpenCV libraries.
+
+# Armwheels
+- Development of "Armwheel", a 2D physics-based puzzle game.
+- Features dynamic arms/wheels linked via player-controlled motorized b2RevoluteJoints, simulated with Box2D physics.
+- Project involved integrating Box2D with SFML (graphics/input), managing coordinate conversion (meters-to-pixels), debugging physics, and structuring world generation/rendering.
+- **TOOLS** Visual Studio, C++, SFML, Box2D v3 C API.
