@@ -1,0 +1,50 @@
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.opensdf
+*.sdf
+*.ipch
+*.cache
+*.log
+*.tlog
+*.obj
+*.idb
+*.pdb
+*.ilk
+*.db
+
+# Build output
+*.exe
+*.dll
+*.lib
+*.exp
+*.iobj
+*.ipdb
+
+# Debug/Release folders (if used)
+Debug/
+Release/
+x64/
+x86/
+
+# CMake (if applicable in future)
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# SFML build artifacts (just in case)
+*.o
+*.a
+
+# General
+*.DS_Store
+Thumbs.db
+
+# Optional: exclude built files from subfolders
+**/sfml-*.dll
+**/arial.TTF
+
+# Optional: if you want to ignore your compiled binary and keep only code
+Armwheels.exe
