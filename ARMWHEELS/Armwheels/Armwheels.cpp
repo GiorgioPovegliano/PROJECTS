@@ -304,6 +304,122 @@ void adjustView(ArmwheelsIds Ids, sf::Vector2u resolution, sf::RenderWindow &win
 	window.setView(currentView);
 }
 
+std::vector<sf::Shape*> generateWorld(b2WorldId worldId, sf::Vector2u resolution) {
+	std::vector<sf::Shape*> shapes;
+
+	// Helper function to make the spikes
+	auto makeSpikeShape = [&](b2Vec2 p1, b2Vec2 p2, b2Vec2 p3, b2Vec2 pos) {
+		b2Vec2 vertices[3] = { p1, p2, p3 };
+		b2Hull spikeHull = b2ComputeHull(vertices, 3);
+		b2Polygon spike = b2MakePolygon(&spikeHull, 0.0f);
+
+		b2BodyDef spikeBodyDef = b2DefaultBodyDef();
+		spikeBodyDef.type = b2_staticBody;
+		spikeBodyDef.position = pos;
+		b2BodyId spikeId = b2CreateBody(worldId, &spikeBodyDef);
+
+		b2ShapeDef spikeShapeDef = b2DefaultShapeDef();
+		b2CreatePolygonShape(spikeId, &spikeShapeDef, &spike);
+
+		sf::ConvexShape* spikeShape = new sf::ConvexShape(3);
+		spikeShape->setFillColor(sf::Color::White);
+		spikeShape->setPoint(0, { p1.x * SCALE_FACTOR, -p1.y * SCALE_FACTOR });
+		spikeShape->setPoint(1, { p2.x * SCALE_FACTOR, -p2.y * SCALE_FACTOR });
+		spikeShape->setPoint(2, { p3.x * SCALE_FACTOR, -p3.y * SCALE_FACTOR });
+		spikeShape->setPosition(convertToSFML(pos, resolution));
+
+		shapes.push_back(spikeShape);
+	};
+
+	// GROUND
+	{
+		b2BodyDef groundBodyDef = b2DefaultBodyDef();
+		groundBodyDef.position = { 0.0f, -10.0f };
+		groundBodyDef.type = b2_staticBody;
+		b2BodyId groundId = b2CreateBody(worldId, &groundBodyDef);
+		b2Polygon groundBox = b2MakeBox(50.0f, 10.0f);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		b2CreatePolygonShape(groundId, &shapeDef, &groundBox);
+
+		sf::RectangleShape* ground = new sf::RectangleShape({ 100.0f * SCALE_FACTOR, 20.0f * SCALE_FACTOR });
+		ground->setFillColor(sf::Color::White);
+		ground->setOrigin(ground->getSize() / 2.0f);
+		ground->setPosition({ float(resolution.x) / 2, float(resolution.y) / 2 + 10.0f * SCALE_FACTOR });
+		shapes.push_back(ground);
+	}
+
+	// BOX
+	{
+		b2BodyDef def = b2DefaultBodyDef();
+		def.position = { 40.0f, 2.5f };
+		def.type = b2_staticBody;
+		b2BodyId id = b2CreateBody(worldId, &def);
+		b2Polygon box = b2MakeBox(10.0f, 2.5f);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		b2CreatePolygonShape(id, &shapeDef, &box);
+
+		sf::RectangleShape* rect = new sf::RectangleShape({ 20.0f * SCALE_FACTOR, 5.0f * SCALE_FACTOR });
+		rect->setFillColor(sf::Color::White);
+		rect->setOrigin(rect->getSize() / 2.0f);
+		rect->setPosition({ float(resolution.x) / 2 + 40.0f * SCALE_FACTOR, float(resolution.y) / 2 - 2.5f * SCALE_FACTOR });
+		shapes.push_back(rect);
+	}
+
+	// WALL
+	{
+		b2BodyDef def = b2DefaultBodyDef();
+		def.position = { -75.0f, 30.0f };
+		def.type = b2_staticBody;
+		b2BodyId id = b2CreateBody(worldId, &def);
+		b2Polygon box = b2MakeBox(25.0f, 50.0f);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		b2CreatePolygonShape(id, &shapeDef, &box);
+
+		sf::RectangleShape* rect = new sf::RectangleShape({ 50.0f * SCALE_FACTOR, 100.0f * SCALE_FACTOR });
+		rect->setFillColor(sf::Color::White);
+		rect->setOrigin(rect->getSize() / 2.0f);
+		rect->setPosition({ float(resolution.x) / 2 - 75.0f * SCALE_FACTOR, float(resolution.y) / 2 - 30.0f * SCALE_FACTOR });
+		shapes.push_back(rect);
+	}
+
+	// SECOND GROUND
+	{
+		b2BodyDef def = b2DefaultBodyDef();
+		def.position = { 110.0f, -10.0f };
+		def.type = b2_staticBody;
+		b2BodyId id = b2CreateBody(worldId, &def);
+		b2Polygon box = b2MakeBox(50.0f, 10.0f);
+		b2ShapeDef shapeDef = b2DefaultShapeDef();
+		b2CreatePolygonShape(id, &shapeDef, &box);
+
+		sf::RectangleShape* rect = new sf::RectangleShape({ 100.0f * SCALE_FACTOR, 20.0f * SCALE_FACTOR });
+		rect->setFillColor(sf::Color::White);
+		rect->setOrigin(rect->getSize() / 2.0f);
+		rect->setPosition({ float(resolution.x) / 2 + 110.0f * SCALE_FACTOR, float(resolution.y) / 2 + 10.0f * SCALE_FACTOR });
+		shapes.push_back(rect);
+	}
+
+	// SPIKES
+	b2Vec2 p1 = { 0.0f, 0.0f };
+	b2Vec2 p2 = { 2.0f, 0.0f };
+
+	makeSpikeShape(p1, p2, { 1.0f, 2.0f }, { 75.0f, 0.0f });
+	makeSpikeShape(p1, p2, { 1.0f, 4.0f }, { 77.0f, 0.0f });
+	makeSpikeShape(p1, p2, { 1.0f, 6.0f }, { 79.0f, 0.0f });
+	makeSpikeShape(p1, p2, { 1.0f, 2.0f }, { 81.0f, 0.0f });
+	makeSpikeShape(p1, p2, { 1.0f, 6.0f }, { 83.0f, 0.0f });
+	makeSpikeShape(p1, p2, { 1.0f, 4.0f }, { 85.0f, 0.0f });
+
+	return shapes;
+}
+
+// Utility function to draw the world inside the input window
+void drawWorld(const std::vector<sf::Shape*>& shapes, sf::RenderWindow& window) {
+	for (const auto& shape : shapes) {
+		window.draw(*shape);
+	}
+}
+
 int main() {
 
 	// Generate the world
@@ -318,9 +434,9 @@ int main() {
 	armwheels.wheelsFriction = 2.0f;
 	armwheels.wheelsRadius = 1.0f;
 	armwheels.armLength = 4.0f;
-	armwheels.pivotSpeed = 2.0f;	// Change these values to affect the speed of the wheels and the speed of the revolute joint
-	armwheels.LwheelSpeed = 7.0f;
-	armwheels.RwheelSpeed = 7.0f;
+	armwheels.pivotSpeed = 3.0f;	// Change these values to affect the speed of the wheels and the speed of the revolute joint
+	armwheels.LwheelSpeed =8.0f;
+	armwheels.RwheelSpeed = 8.0f;
 	armwheels.pivotTorque = 200.0f;
 	armwheels.wheelsTorque = 100.0f;
 
@@ -342,150 +458,8 @@ int main() {
 	window.setFramerateLimit(freq);	// Set the refresh rate of the window
 	window.clear();
 
+	std::vector<sf::Shape*> myWorld = generateWorld(worldId, resolution);
 
-	// WORLD GENERATION AND PRINT
-	// 
-	// Generate and print Ground Box
-	b2BodyDef groundBodyDef = b2DefaultBodyDef();
-	groundBodyDef.position = { 0.0f, -10.0f };
-	groundBodyDef.type = b2_staticBody;
-	b2BodyId groundId = b2CreateBody(worldId, &groundBodyDef);
-	b2Polygon groundBox = b2MakeBox(50.0f, 10.0f);
-
-	b2ShapeDef groundShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
-
-	sf::RectangleShape ground({ 100.0f * SCALE_FACTOR, 20.0f * SCALE_FACTOR });
-	ground.setFillColor(sf::Color::White);
-	ground.setOrigin({ (100.0f * SCALE_FACTOR) / 2.0f, (20.0f * SCALE_FACTOR) / 2.0f });
-
-	ground.setPosition({ float(resolution.x) / 2, float(resolution.y) / 2 + 10.0f * SCALE_FACTOR });
-
-	// BOX 
-	b2BodyDef boxBodyDef = b2DefaultBodyDef();
-	boxBodyDef.position = { 40.0f, 2.5f };
-	boxBodyDef.type = b2_staticBody;
-	b2BodyId boxId = b2CreateBody(worldId, &boxBodyDef);
-	b2Polygon boxBox = b2MakeBox(10.0f, 2.5f);
-
-	b2ShapeDef boxShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(boxId, &boxShapeDef, &boxBox);
-
-	sf::RectangleShape box({ 20.0f * SCALE_FACTOR, 5.0f * SCALE_FACTOR });
-	box.setFillColor(sf::Color::White);
-	box.setOrigin({ (20.0f * SCALE_FACTOR) / 2.0f, (5.0f * SCALE_FACTOR) / 2.0f });
-	box.setPosition({ float(resolution.x) / 2 + 40.0f * SCALE_FACTOR, float(resolution.y) / 2 - 2.5f * SCALE_FACTOR});
-
-	// WALL
-	b2BodyDef wallBodyDef = b2DefaultBodyDef();
-	wallBodyDef.position = { -75.0f, 30.0f };
-	wallBodyDef.type = b2_staticBody;
-	b2BodyId wallId = b2CreateBody(worldId, &wallBodyDef);
-	b2Polygon wallBox = b2MakeBox(25.0f, 50.0f);
-
-	b2ShapeDef wallShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(wallId, &wallShapeDef, &wallBox);
-
-	sf::RectangleShape wall({ 50.0f * SCALE_FACTOR, 100.0f * SCALE_FACTOR });
-	wall.setFillColor(sf::Color::White);
-	wall.setOrigin({ (50.0f * SCALE_FACTOR) / 2.0f, (100.0f * SCALE_FACTOR) / 2.0f });
-	wall.setPosition({ float(resolution.x) / 2 - 75.0f * SCALE_FACTOR, float(resolution.y) / 2 - 30.0f * SCALE_FACTOR});
-
-	// SECOND GROUND BOX WITH A JUMP
-	b2BodyDef ground2BodyDef = b2DefaultBodyDef();
-	ground2BodyDef.position = { 110.0f, -10.0f };
-	ground2BodyDef.type = b2_staticBody;
-	b2BodyId ground2Id = b2CreateBody(worldId, &ground2BodyDef);
-	b2Polygon ground2Box = b2MakeBox(50.0f, 10.0f);
-
-	b2ShapeDef ground2ShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(ground2Id, &ground2ShapeDef, &ground2Box);
-
-	sf::RectangleShape ground2({ 100.0f * SCALE_FACTOR, 20.0f * SCALE_FACTOR });
-	ground2.setFillColor(sf::Color::White);
-	ground2.setOrigin({ (100.0f * SCALE_FACTOR) / 2.0f, (20.0f * SCALE_FACTOR) / 2.0f });
-
-	ground2.setPosition({ float(resolution.x) / 2 + 110.f * SCALE_FACTOR, float(resolution.y) / 2 + 10.0f * SCALE_FACTOR });
-	// SPIKES ON THE GROUND
-	// Spike1
-	b2Vec2 p1 = { 0.0f, 0.0f };     // bottom-left
-	b2Vec2 p2 = { 2.0f, 0.0f };     // bottom-right
-	b2Vec2 p3 = { 1.0f, 2.0f };     // top
-
-	b2Vec2 vertices[3] = { p1, p2, p3 };
-	b2Hull spikeHull = b2ComputeHull(vertices, 3);
-
-	b2Polygon spike = b2MakePolygon(&spikeHull, 0.0f);  
-
-	b2BodyDef spikeBodyDef = b2DefaultBodyDef();
-	spikeBodyDef.type = b2_staticBody;
-	spikeBodyDef.position = { 77.0f, 0.0f };  
-	b2BodyId spikeBodyId = b2CreateBody(worldId, &spikeBodyDef);
-
-	b2ShapeDef spikeShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(spikeBodyId, &spikeShapeDef, &spike);
-
-	sf::ConvexShape spike1;
-	spike1.setPointCount(3);
-	spike1.setFillColor(sf::Color::White);
-
-	spike1.setPoint(0, { p1.x * SCALE_FACTOR, -p1.y * SCALE_FACTOR });
-	spike1.setPoint(1, { p2.x * SCALE_FACTOR, -p2.y * SCALE_FACTOR });
-	spike1.setPoint(2, { p3.x * SCALE_FACTOR, -p3.y * SCALE_FACTOR });
-
-	spike1.setPosition({convertToSFML({ 77.0f, 0.0f }, resolution)});
-
-	// Spike2
-	p3 = { 1.0f, 4.0f };     
-
-	vertices[2] = p3;
-	spikeHull = b2ComputeHull(vertices, 3);
-
-	spike = b2MakePolygon(&spikeHull, 0.0f);  
-
-	spikeBodyDef.position = { 79.0f, 0.0f };  
-	b2BodyId spike2BodyId = b2CreateBody(worldId, &spikeBodyDef);
-
-	spikeShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(spike2BodyId, &spikeShapeDef, &spike);
-
-	sf::ConvexShape spike2;
-	spike2.setPointCount(3);
-	spike2.setFillColor(sf::Color::White);
-
-	spike2.setPoint(0, { p1.x * SCALE_FACTOR, -p1.y * SCALE_FACTOR });
-	spike2.setPoint(1, { p2.x * SCALE_FACTOR, -p2.y * SCALE_FACTOR });
-	spike2.setPoint(2, { p3.x * SCALE_FACTOR, -p3.y * SCALE_FACTOR });
-
-	spike2.setPosition({convertToSFML({ 79.0f, 0.0f }, resolution)});
-
-	// Spike3
-	p3 = { 1.0f, 6.0f };
-
-	vertices[2] = p3;
-	spikeHull = b2ComputeHull(vertices, 3);
-
-	spike = b2MakePolygon(&spikeHull, 0.0f);
-
-	spikeBodyDef.position = { 81.0f, 0.0f };
-	b2BodyId spike3BodyId = b2CreateBody(worldId, &spikeBodyDef);
-
-	spikeShapeDef = b2DefaultShapeDef();
-	b2CreatePolygonShape(spike3BodyId, &spikeShapeDef, &spike);
-
-	sf::ConvexShape spike3;
-	spike3.setPointCount(3);
-	spike3.setFillColor(sf::Color::White);
-
-	spike3.setPoint(0, { p1.x * SCALE_FACTOR, -p1.y * SCALE_FACTOR });
-	spike3.setPoint(1, { p2.x * SCALE_FACTOR, -p2.y * SCALE_FACTOR });
-	spike3.setPoint(2, { p3.x * SCALE_FACTOR, -p3.y * SCALE_FACTOR });
-
-	spike3.setPosition({ convertToSFML({ 81.0f, 0.0f }, resolution) });
-
-	//
-	// END OF WORLD SECTION
-	
 	// View initialization
 	applyDefaultView(resolution, window);
 
@@ -576,13 +550,7 @@ int main() {
 			adjustView(Ids, resolution, window);
 			// printDebug(Ids);
 			printArmwheels(Ids, armwheels, worldId, window, resolution);	// Function that renders the Armwheels inside the window in its correct position
-			window.draw(ground);
-			window.draw(box);
-			window.draw(wall);
-			window.draw(ground2);
-			window.draw(spike1);
-			window.draw(spike2);
-			window.draw(spike3);
+			drawWorld(myWorld, window);
 			// Display the drawings (including the world bodies)
 			window.display();
 			b2World_Step(worldId, dt, substep);
