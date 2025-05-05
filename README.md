@@ -33,3 +33,11 @@ This collection showcases some of the projects I have completed during my academ
 - Features dynamic arms/wheels linked via player-controlled motorized b2RevoluteJoints, simulated with Box2D physics.
 - Project involved integrating Box2D with SFML (graphics/input), managing coordinate conversion (meters-to-pixels), debugging physics, and structuring world generation/rendering.
 - **TOOLS** Visual Studio, C++, SFML, Box2D v3 C API.
+
+# Music Generation Deep Learning Project
+- Development of a GAN-based system for symbolic music generation using piano-roll representations.
+- Trained a Deep Convolutional GAN (DCGAN) on binarized piano-rolls extracted from MIDI files to generate novel music sequences.
+- Project involved preprocessing MIDI data with PrettyMIDI, implementing and training Generator/Discriminator networks in PyTorch, post-processing outputs back into MIDI format, and tuning loss functions for stable GAN training.
+- **TOOLS** Python, PyTorch, PrettyMIDI, NumPy, Matplotlib.
+
+
